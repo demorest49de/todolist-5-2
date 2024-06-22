@@ -29,7 +29,7 @@ export const Todolist = React.memo(function ({ demo = false, ...props }: PropsTy
     if (demo) {
       return;
     }
-    const thunk = tasksThunks.fetchTasks(props.todolist.id);
+    const thunk = tasksThunks.fetchTasks({ todolistId: props.todolist.id });
     dispatch(thunk);
   }, []);
 

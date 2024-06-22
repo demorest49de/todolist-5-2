@@ -199,7 +199,7 @@ test("tasks should be added for todolist", () => {
   const action = tasksThunks.fetchTasks.fulfilled(
     { tasks: startState["todolistId1"], todolistId: "todolistId1" },
     nanoid(),
-    "todolistId1",
+    { todolistId: "todolistId1" }
   );
 
   const endState = tasksReducer(

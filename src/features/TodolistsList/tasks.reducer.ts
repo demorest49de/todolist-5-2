@@ -1,10 +1,12 @@
 import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
-import { AppThunk } from "app/store";
+import { AppDispatch, AppRootStateType, AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
+import type { Dispatch } from "redux";
+import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk";
 
 const initialState: TasksStateType = {};
 
@@ -60,13 +62,34 @@ const slice = createSlice({
 
 // thunks
 
+type AsyncThunkConfig = {
+  state?: unknown
+  dispatch?: Dispatch
+  extra?: unknown
+  rejectValue?: unknown
+  serializedErrorType?: unknown
+  pendingMeta?: unknown
+  fulfilledMeta?: unknown
+  rejectedMeta?: unknown
+}
+
+type returnedTypeForFetchTasks = {
+  tasks: TaskType[],
+  todolistId: string,
+}
+
 const fetchTasks =
-  createAsyncThunk<{ tasks: TaskType[], todolistId: string }, string>(
+  createAppAsyncThunk<
+    returnedTypeForFetchTasks, //todo  возвращаемый тип из санки
+    { todolistId: string } // todo аргументы из санки
+  >(
     `${slice.name}/fetchTasks`,
-    async (todolistId, thunkAPI) => {
+    async ({ todolistId }, thunkAPI) => {
 
       const { dispatch, rejectWithValue, getState } = thunkAPI;
-      // const state = getState().app.todolists;
+
+      const state = getState();
+
       try {
         dispatch(appActions.setAppStatus({ status: "loading" }));
         const res = await todolistsAPI.getTasks(todolistId);
