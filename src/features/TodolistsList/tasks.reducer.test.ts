@@ -195,12 +195,11 @@ test("empty arrays should be added when we set todolists", () => {
 });
 
 test("tasks should be added for todolist", () => {
-  // const action = tasksActions.setTasks({ tasks: startState["todolistId1"], todolistId: "todolistId1" });
-  // 1 01
+
   const action = tasksThunks.fetchTasks.fulfilled(
     { tasks: startState["todolistId1"], todolistId: "todolistId1" },
     nanoid(),
-    "todolistId1"
+    "todolistId1",
   );
 
   const endState = tasksReducer(
