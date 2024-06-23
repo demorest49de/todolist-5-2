@@ -38,6 +38,7 @@ const slice = createSlice({
       }
     }
   },
+  //todo с санками работает только экстраредюсер
   extraReducers: (builder) => {
     builder
       .addCase(fetchTasks.fulfilled, (state, action) => {
@@ -77,7 +78,9 @@ type returnedTypeForFetchTasks = {
   tasks: TaskType[],
   todolistId: string,
 }
-
+/**
+ * https://youtu.be/UAWORfJmSxI?t=6448
+ */
 const fetchTasks =
   createAppAsyncThunk<
     returnedTypeForFetchTasks, //todo  возвращаемый тип из санки
@@ -88,7 +91,7 @@ const fetchTasks =
 
       const { dispatch, rejectWithValue, getState } = thunkAPI;
 
-      const state = getState();
+      // const state = getState();
 
       try {
         dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -96,7 +99,7 @@ const fetchTasks =
         const tasks = res.data.items;
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
         return { tasks, todolistId };
-      } catch (error: any) {
+      } catch (error: any) {//todo избавиться от any
         handleServerNetworkError(error, dispatch);
         return rejectWithValue(null);
       }
