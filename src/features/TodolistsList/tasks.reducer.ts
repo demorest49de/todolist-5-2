@@ -95,8 +95,8 @@ const fetchTasks =
       const { dispatch, rejectWithValue, getState } = thunkAPI;
 
       try {
-        dispatch(appActions.setAppStatus({ status: "loading" }));
         const res = await todolistsAPI.getTasks(todolistId);
+        dispatch(appActions.setAppStatus({ status: "loading" }));
         const tasks = res.data.items;
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
         return { tasks, todolistId };
@@ -115,9 +115,9 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string, ti
     const { dispatch, rejectWithValue } = thunkAPI;
 
     dispatch(appActions.setAppStatus({ status: "loading" }));
-    const res = await todolistsAPI.createTask(args);
     try {
-      // debugger
+      const res = await todolistsAPI.createTask(args);
+
       if (res.data.resultCode === 0) {
         const task = res.data.data.item;
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
@@ -161,8 +161,8 @@ const updateTask = createAppAsyncThunk<ArgsUpdateTask, ArgsUpdateTask>
     };
 
     debugger
-    const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
     try {
+      const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
       if (res.data.resultCode === 0) {
         return args;
       } else {

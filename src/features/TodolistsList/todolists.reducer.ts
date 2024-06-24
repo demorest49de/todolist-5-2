@@ -41,13 +41,13 @@ const slice = createSlice({
     setTodolists: (state, action: PayloadAction<{ todolists: TodolistType[] }>) => {
       return action.payload.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }));
       // return action.payload.forEach(t => ({...t, filter: 'active', entityStatus: 'idle'}))
-    },
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(clearTasksAndTodolists, () => {
       return [];
     });
-  },
+  }
 });
 
 export const todolistsReducer = slice.reducer;
@@ -55,17 +55,24 @@ export const todolistsActions = slice.actions;
 
 // thunks
 export const fetchTodolistsTC = (): AppThunk => {
-  return (dispatch) => {
-    dispatch(appActions.setAppStatus({ status: "loading" }));
-    todolistsAPI
-      .getTodolists()
-      .then((res) => {
+  return async (dispatch) => {
+    try {
+      // debugger
+      dispatch(appActions.setAppStatus({ status: "loading" }));
+      const res = await todolistsAPI.getTodolists();
+      /**
+       *  todo заменил на if res.status >= 200 && res.status < 300  else временно
+       */
+      if (res.status >= 200 && res.status < 300) {
         dispatch(todolistsActions.setTodolists({ todolists: res.data }));
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
-      })
-      .catch((error) => {
-        handleServerNetworkError(error, dispatch);
-      });
+      } else {
+        handleServerNetworkError(res.data, dispatch);
+      }
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
+    }
+
   };
 };
 export const removeTodolistTC = (id: string): AppThunk => {
