@@ -108,22 +108,11 @@ const fetchTasks =
 
 //#endregion fetchTasks
 
-// region removeTask
-export const removeTaskTC =
-  (taskId: string, todolistId: string): AppThunk =>
-    (dispatch) => {
-      todolistsAPI.deleteTask(todolistId, taskId).then(() => {
-        dispatch(tasksActions.removeTask({ taskId, todolistId }));
-      });
-    };
-// endregion fetchTasks
-
 // region addTask
 const addTask = createAsyncThunk<{ task: TaskType }, { todolistId: string, title: string }>(
   `${slice.name}/addTask`,
   async (args, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    const { title, todolistId } = args;
 
     dispatch(appActions.setAppStatus({ status: "loading" }));
     const res = await todolistsAPI.createTask(args);
@@ -147,6 +136,8 @@ const addTask = createAsyncThunk<{ task: TaskType }, { todolistId: string, title
 // endregion addTask
 
 // region updateTask
+
+
 export const updateTaskTC =
   (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): AppThunk =>
     (dispatch, getState) => {
@@ -183,7 +174,17 @@ export const updateTaskTC =
     };
 // endregion updateTask
 
-// types
+// region removeTask
+export const removeTaskTC =
+  (taskId: string, todolistId: string): AppThunk =>
+    (dispatch) => {
+      todolistsAPI.deleteTask(todolistId, taskId).then(() => {
+        dispatch(tasksActions.removeTask({ taskId, todolistId }));
+      });
+    };
+// endregion fetchTasks
+
+//region types
 export type UpdateDomainTaskModelType = {
   title?: string;
   description?: string;
@@ -195,6 +196,7 @@ export type UpdateDomainTaskModelType = {
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
 };
+//endregion types
 
 export const tasksReducer = slice.reducer;
 export const tasksActions = slice.actions;
