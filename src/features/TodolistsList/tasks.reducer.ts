@@ -29,7 +29,7 @@ const slice = createSlice({
       const tasks = state[action.payload.todolistId];
       const index = tasks.findIndex((t) => t.id === action.payload.taskId);
       if (index !== -1) tasks.splice(index, 1);
-    },
+    }
   },
   //endregion reducers
 
@@ -100,7 +100,7 @@ const fetchTasks =
         const tasks = res.data.items;
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
         return { tasks, todolistId };
-      } catch (error) {//todo избавиться от any
+      } catch (error) {
         handleServerNetworkError(error, dispatch);
         return rejectWithValue(null);// todo заглушка
       }
@@ -160,6 +160,7 @@ const updateTask = createAppAsyncThunk<ArgsUpdateTask, ArgsUpdateTask>
       ...domainModel
     };
 
+    debugger
     const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
     try {
       if (res.data.resultCode === 0) {
