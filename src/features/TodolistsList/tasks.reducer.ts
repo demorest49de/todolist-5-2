@@ -5,7 +5,6 @@ import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
-import type { Dispatch } from "redux";
 import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk";
 
 const initialState: TasksStateType = {};
@@ -13,6 +12,11 @@ const initialState: TasksStateType = {};
 const slice = createSlice({
   name: "tasks",
   initialState,
+
+  //region reducers
+  /**
+   * todo общий редюсер для экш/редюсеров но! не для санок! для санок - экстраредюсеры!!!!
+   */
   reducers: {
     removeTask: (state, action: PayloadAction<{ taskId: string; todolistId: string }>) => {
       const tasks = state[action.payload.todolistId];
@@ -38,11 +42,12 @@ const slice = createSlice({
       }
     }
   },
+  //endregion reducers
+
+  //region extrareducers
   /**
-   * // todo как происходит обработка fullfilled??
-   * с санками работает только экстраредюсер
+   *todo с санками работает только экстраредюсер
    */
-  //todo с санками работает только экстраредюсер
   extraReducers: (builder) => {
     builder
       .addCase(fetchTasks.fulfilled, (state, action) => {
@@ -63,6 +68,7 @@ const slice = createSlice({
         return {};
       });
   }
+  //endregion extrareducers
 });
 
 // thunks
