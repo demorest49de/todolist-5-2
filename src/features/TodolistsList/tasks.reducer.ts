@@ -1,9 +1,9 @@
 import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
-import { AppDispatch, AppRootStateType, AppThunk } from "app/store";
+import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
 import type { Dispatch } from "redux";
 import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk";
@@ -38,6 +38,10 @@ const slice = createSlice({
       }
     }
   },
+  /**
+   * // todo как происходит обработка fullfilled??
+   * с санками работает только экстраредюсер
+   */
   //todo с санками работает только экстраредюсер
   extraReducers: (builder) => {
     builder
@@ -63,35 +67,26 @@ const slice = createSlice({
 
 // thunks
 
-type AsyncThunkConfig = {
-  state?: unknown
-  dispatch?: Dispatch
-  extra?: unknown
-  rejectValue?: unknown
-  serializedErrorType?: unknown
-  pendingMeta?: unknown
-  fulfilledMeta?: unknown
-  rejectedMeta?: unknown
-}
-
+// region fetchTasks
 type returnedTypeForFetchTasks = {
   tasks: TaskType[],
   todolistId: string,
 }
+
 /**
- * https://youtu.be/UAWORfJmSxI?t=6448
+ * экшн криэйтор теперь не создаем он создается сам
+ *  возвращаемый тип из санки
+ *    аргументы из санки
  */
 const fetchTasks =
   createAppAsyncThunk<
     returnedTypeForFetchTasks, //todo  возвращаемый тип из санки
     { todolistId: string } // todo аргументы из санки
   >(
-    `${slice.name}/fetchTasks`,
+    `${slice.name}/fetchTasks`,// todo если навести на асинк то увидим что 2 аргумент т ес  коллбэк возвращает промис
     async ({ todolistId }, thunkAPI) => {
 
       const { dispatch, rejectWithValue, getState } = thunkAPI;
-
-      // const state = getState();
 
       try {
         dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -101,10 +96,13 @@ const fetchTasks =
         return { tasks, todolistId };
       } catch (error: any) {//todo избавиться от any
         handleServerNetworkError(error, dispatch);
-        return rejectWithValue(null);
+        return rejectWithValue(null);// todo заглушка
       }
     });
 
+//#endregion fetchTasks
+
+// region removeTask
 export const removeTaskTC =
   (taskId: string, todolistId: string): AppThunk =>
     (dispatch) => {
@@ -112,7 +110,9 @@ export const removeTaskTC =
         dispatch(tasksActions.removeTask({ taskId, todolistId }));
       });
     };
+// endregion fetchTasks
 
+// region addTask
 export const addTaskTC =
   (title: string, todolistId: string): AppThunk =>
     (dispatch) => {
@@ -132,6 +132,9 @@ export const addTaskTC =
           handleServerNetworkError(error, dispatch);
         });
     };
+// endregion addTask
+
+// region updateTask
 export const updateTaskTC =
   (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): AppThunk =>
     (dispatch, getState) => {
@@ -166,6 +169,7 @@ export const updateTaskTC =
           handleServerNetworkError(error, dispatch);
         });
     };
+// endregion updateTask
 
 // types
 export type UpdateDomainTaskModelType = {

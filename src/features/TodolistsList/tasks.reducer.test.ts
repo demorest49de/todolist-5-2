@@ -232,7 +232,7 @@ test("tasks should be added for todolist-2", () => {
     action
   );
 
-// todo 2 способ as FetchTaskAction
+//  2 способ as FetchTaskAction
   // const endState = tasksReducer(
   //   {
   //     todolistId2: [],
