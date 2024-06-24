@@ -24,7 +24,7 @@ export const handleServerAppError = <D>(data: ResponseType<D>, dispatch: Dispatc
 // ❗Какой-то непонятный кейс
 
 
-export const handleServerNetworkError = (err: unknown, dispatch: AppDispatch): void => {
+export const handleServerNetworkError = (err: unknown, dispatch: Dispatch): void => {
   let errorMessage = "Some error occurred";
 
   if (axios.isAxiosError(err)) {

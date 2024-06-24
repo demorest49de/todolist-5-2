@@ -3,7 +3,7 @@ import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
 import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk";
 
@@ -22,10 +22,6 @@ const slice = createSlice({
       const tasks = state[action.payload.todolistId];
       const index = tasks.findIndex((t) => t.id === action.payload.taskId);
       if (index !== -1) tasks.splice(index, 1);
-    },
-    addTask: (state, action: PayloadAction<{ task: TaskType }>) => {
-      const tasks = state[action.payload.task.todoListId];
-      tasks.unshift(action.payload.task);
     },
     updateTask: (
       state,
@@ -46,12 +42,16 @@ const slice = createSlice({
 
   //region extrareducers
   /**
-   *todo с санками работает только экстраредюсер
+   * todo extra reducer нужен: 1) с санками работает только экстраредюсер; 2) вызвать вызвать редюсер из другого слайса
    */
   extraReducers: (builder) => {
     builder
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state[action.payload.todolistId] = action.payload.tasks;
+      })
+      .addCase(addTask.fulfilled, (state, action) => {
+        const tasks = state[action.payload.task.todoListId];
+        tasks.unshift(action.payload.task);
       })
       .addCase(todolistsActions.addTodolist, (state, action) => {
         state[action.payload.todolist.id] = [];
@@ -100,7 +100,7 @@ const fetchTasks =
         const tasks = res.data.items;
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
         return { tasks, todolistId };
-      } catch (error: any) {//todo избавиться от any
+      } catch (error) {//todo избавиться от any
         handleServerNetworkError(error, dispatch);
         return rejectWithValue(null);// todo заглушка
       }
@@ -119,25 +119,31 @@ export const removeTaskTC =
 // endregion fetchTasks
 
 // region addTask
-export const addTaskTC =
-  (title: string, todolistId: string): AppThunk =>
-    (dispatch) => {
-      dispatch(appActions.setAppStatus({ status: "loading" }));
-      todolistsAPI
-        .createTask(todolistId, title)
-        .then((res) => {
-          if (res.data.resultCode === 0) {
-            const task = res.data.data.item;
-            dispatch(tasksActions.addTask({ task }));
-            dispatch(appActions.setAppStatus({ status: "succeeded" }));
-          } else {
-            handleServerAppError(res.data, dispatch);
-          }
-        })
-        .catch((error) => {
-          handleServerNetworkError(error, dispatch);
-        });
-    };
+const addTask = createAsyncThunk<{ task: TaskType }, { todolistId: string, title: string }>(
+  `${slice.name}/addTask`,
+  async (args, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
+    const { title, todolistId } = args;
+
+    dispatch(appActions.setAppStatus({ status: "loading" }));
+    const res = await todolistsAPI.createTask(args);
+    try {
+      // debugger
+      if (res.data.resultCode === 0) {
+        const task = res.data.data.item;
+        dispatch(appActions.setAppStatus({ status: "succeeded" }));
+        return { task };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+        // заглушка
+      }
+    } catch (error) {
+      handleServerNetworkError(error, dispatch);
+      return rejectWithValue(null);
+      // заглушка
+    }
+  });
 // endregion addTask
 
 // region updateTask
@@ -192,4 +198,4 @@ export type TasksStateType = {
 
 export const tasksReducer = slice.reducer;
 export const tasksActions = slice.actions;
-export const tasksThunks = { fetchTasks };
+export const tasksThunks = { fetchTasks, addTask };
