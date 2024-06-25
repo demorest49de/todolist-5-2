@@ -1,9 +1,9 @@
-import { tasksActions, tasksReducer, TasksStateType, tasksThunks } from "features/TodolistsList/tasks.reducer";
-import { TaskPriorities, TaskStatuses, TaskType } from "api/todolists-api";
-import { todolistsActions } from "features/TodolistsList/todolists.reducer";
-import { nanoid } from "@reduxjs/toolkit";
+import { tasksActions, tasksReducer, TasksStateType, tasksThunks } from "features/TodolistsList/tasks.reducer"
+import { TaskPriorities, TaskStatuses, TaskType } from "api/todolists-api"
+import { todolistsActions } from "features/TodolistsList/todolists.reducer"
+import { nanoid } from "@reduxjs/toolkit"
 
-let startState: TasksStateType = {};
+let startState: TasksStateType = {}
 beforeEach(() => {
   startState = {
     todolistId1: [
@@ -17,7 +17,7 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
+        priority: TaskPriorities.Low,
       },
       {
         id: "2",
@@ -29,7 +29,7 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
+        priority: TaskPriorities.Low,
       },
       {
         id: "3",
@@ -41,8 +41,8 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
-      }
+        priority: TaskPriorities.Low,
+      },
     ],
     todolistId2: [
       {
@@ -55,7 +55,7 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
+        priority: TaskPriorities.Low,
       },
       {
         id: "2",
@@ -67,7 +67,7 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
+        priority: TaskPriorities.Low,
       },
       {
         id: "3",
@@ -79,40 +79,64 @@ beforeEach(() => {
         deadline: "",
         addedDate: "",
         order: 0,
-        priority: TaskPriorities.Low
-      }
-    ]
-  };
-});
+        priority: TaskPriorities.Low,
+      },
+    ],
+  }
+})
 
-// test("correct task should be deleted from correct array", () => {
-//   const action = tasksActions.removeTask({ taskId: "2", todolistId: "todolistId2" });
-//
-//   const endState = tasksReducer(startState, action);
-//
-//   expect(endState["todolistId1"].length).toBe(3);
-//   expect(endState["todolistId2"].length).toBe(2);
-//   expect(endState["todolistId2"].every((t) => t.id !== "2")).toBeTruthy();
-// });
+type AddTaskType = Omit<ReturnType<typeof tasksThunks.addTask.fulfilled>, "meta">
+type ActionForTest<T> = Omit<ReturnType<T>, "meta">
 
-// test("correct task should be added to correct array", () => {
-// type AddTaskType = Omit<ReturnType<typeof  tasksThunks.addTask.fulfilled>, 'meta'>
-//     tasksThunks.addTask({      todolistId: "todolistId2",      title: "juce",  });
-//
-// const action: AddTaskType = {
-//     type: tasksThunks.addTask.fulfilled.type,
-//     payload: {      todolistId: "todolistId2",      title: "juce",  }
-//   }
-//   /**
-//    * https://youtu.be/UAWORfJmSxI?t=8925
-//    */
-//
-//   // expect(endState["todolistId1"].length).toBe(3);
-//   // expect(endState["todolistId2"].length).toBe(4);
-//   // expect(endState["todolistId2"][0].id).toBeDefined();
-//   // expect(endState["todolistId2"][0].title).toBe("juce");
-//   // expect(endState["todolistId2"][0].status).toBe(TaskStatuses.New);
-// });
+// (...args: any) => any
+
+test("correct task should be deleted from correct array", () => {
+  type RemoveTaskType = Omit<ReturnType<typeof tasksThunks.removeTask.fulfilled>, "meta">
+
+  const action: RemoveTaskType = {
+    type: tasksThunks.removeTask.fulfilled.type,
+    payload: {
+      taskId: "2",
+      todolistId: "todolistId2",
+    },
+  }
+
+  const endState = tasksReducer(startState, action)
+
+  expect(endState["todolistId1"].length).toBe(3)
+  expect(endState["todolistId2"].length).toBe(2)
+  expect(endState["todolistId2"].every((t) => t.id !== "2")).toBeTruthy()
+})
+
+test("correct task should be added to correct array", () => {
+  type AddTaskType = Omit<ReturnType<typeof tasksThunks.addTask.fulfilled>, "meta">
+
+  const action: AddTaskType = {
+    type: tasksThunks.addTask.fulfilled.type,
+    payload: {
+      task: {
+        todoListId: "todolistId2",
+        title: "juce",
+        addedDate: "",
+        deadline: "",
+        description: "",
+        status: TaskStatuses.New,
+        priority: TaskPriorities.Low,
+        startDate: "",
+        id: "",
+        order: 0,
+      },
+    },
+  }
+
+  const endState = tasksReducer(startState, action)
+
+  expect(endState["todolistId1"].length).toBe(3)
+  expect(endState["todolistId2"].length).toBe(4)
+  expect(endState["todolistId2"][0].id).toBeDefined()
+  expect(endState["todolistId2"][0].title).toBe("juce")
+  expect(endState["todolistId2"][0].status).toBe(TaskStatuses.New)
+})
 
 // test("status of specified task should be changed", () => {
 //   const action = tasksThunks.updateTask({
@@ -143,89 +167,86 @@ test("new array should be added when new todolist is added", () => {
       id: "blabla",
       title: "new todolist",
       order: 0,
-      addedDate: ""
-    }
-  });
+      addedDate: "",
+    },
+  })
 
-  const endState = tasksReducer(startState, action);
+  const endState = tasksReducer(startState, action)
 
-  const keys = Object.keys(endState);
-  const newKey = keys.find((k) => k != "todolistId1" && k != "todolistId2");
+  const keys = Object.keys(endState)
+  const newKey = keys.find((k) => k != "todolistId1" && k != "todolistId2")
   if (!newKey) {
-    throw Error("new key should be added");
+    throw Error("new key should be added")
   }
 
-  expect(keys.length).toBe(3);
-  expect(endState[newKey]).toEqual([]);
-});
+  expect(keys.length).toBe(3)
+  expect(endState[newKey]).toEqual([])
+})
 
 test("propertry with todolistId should be deleted", () => {
-  const action = todolistsActions.removeTodolist({ id: "todolistId2" });
+  const action = todolistsActions.removeTodolist({ id: "todolistId2" })
 
-  const endState = tasksReducer(startState, action);
+  const endState = tasksReducer(startState, action)
 
-  const keys = Object.keys(endState);
+  const keys = Object.keys(endState)
 
-  expect(keys.length).toBe(1);
-  expect(endState["todolistId2"]).not.toBeDefined();
-});
+  expect(keys.length).toBe(1)
+  expect(endState["todolistId2"]).not.toBeDefined()
+})
 
 test("empty arrays should be added when we set todolists", () => {
   const action = todolistsActions.setTodolists({
     todolists: [
       { id: "1", title: "title 1", order: 0, addedDate: "" },
-      { id: "2", title: "title 2", order: 0, addedDate: "" }
-    ]
-  });
+      { id: "2", title: "title 2", order: 0, addedDate: "" },
+    ],
+  })
 
-  const endState = tasksReducer({}, action);
+  const endState = tasksReducer({}, action)
 
-  const keys = Object.keys(endState);
+  const keys = Object.keys(endState)
 
-  expect(keys.length).toBe(2);
-  expect(endState["1"]).toBeDefined();
-  expect(endState["2"]).toBeDefined();
-});
+  expect(keys.length).toBe(2)
+  expect(endState["1"]).toBeDefined()
+  expect(endState["2"]).toBeDefined()
+})
 
 test("tasks should be added for todolist", () => {
-
   const action = tasksThunks.fetchTasks.fulfilled(
     { tasks: startState["todolistId1"], todolistId: "todolistId1" },
     nanoid(),
-    { todolistId: "todolistId1" }
-  );
+    { todolistId: "todolistId1" },
+  )
 
   const endState = tasksReducer(
     {
       todolistId2: [],
-      todolistId1: []
+      todolistId1: [],
     },
-    action
-  );
+    action,
+  )
 
-  expect(endState["todolistId1"].length).toBe(3);
-  expect(endState["todolistId2"].length).toBe(0);
-});
-
+  expect(endState["todolistId1"].length).toBe(3)
+  expect(endState["todolistId2"].length).toBe(0)
+})
 
 test("tasks should be added for todolist-2", () => {
-
   type FetchTaskAction = Omit<ReturnType<typeof tasksThunks.fetchTasks.fulfilled>, "meta">
 
   const action: FetchTaskAction = {
     type: tasksThunks.fetchTasks.fulfilled.type,
-    payload: { tasks: startState["todolistId1"], todolistId: "todolistId1" }
-  };
+    payload: { tasks: startState["todolistId1"], todolistId: "todolistId1" },
+  }
 
   const endState = tasksReducer(
     {
       todolistId2: [],
-      todolistId1: []
+      todolistId1: [],
     },
-    action
-  );
+    action,
+  )
 
-//  2 способ as FetchTaskAction
+  //  2 способ as FetchTaskAction
   // const endState = tasksReducer(
   //   {
   //     todolistId2: [],
@@ -237,6 +258,6 @@ test("tasks should be added for todolist-2", () => {
   //   } as FetchTaskAction
   // );
 
-  expect(endState["todolistId1"].length).toBe(3);
-  expect(endState["todolistId2"].length).toBe(0);
-});
+  expect(endState["todolistId1"].length).toBe(3)
+  expect(endState["todolistId2"].length).toBe(0)
+})
