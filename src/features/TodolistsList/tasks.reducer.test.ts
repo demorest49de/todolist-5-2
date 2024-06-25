@@ -86,7 +86,7 @@ beforeEach(() => {
 })
 
 type AddTaskType = Omit<ReturnType<typeof tasksThunks.addTask.fulfilled>, "meta">
-type ActionForTest<T> = Omit<ReturnType<T>, "meta">
+type ActionForTest<T extends (...args: any) => any> = Omit<ReturnType<T>, "meta">
 
 // (...args: any) => any
 
