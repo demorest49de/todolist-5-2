@@ -139,7 +139,9 @@ beforeEach(() => {
  *
  */
 //endregion examples
-
+/**
+ * https://youtu.be/UAWORfJmSxI?t=9563
+ */
 test("correct task should be deleted from correct array", () => {
   type RemoveTaskType = ActionForTest<typeof tasksThunks.removeTask.fulfilled>
 
