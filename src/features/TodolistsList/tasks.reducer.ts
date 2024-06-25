@@ -37,6 +37,31 @@ enum ResultCodeAsEnum {
  */
 
 /**
+ *
+ * const direction = {
+ *   Up: "UP",
+ *   Down: "DOWN",
+ *   Left: "LEFT",
+ *   Right: "RIGHT",
+ * } as const
+ *
+ * // Типизация
+ * type a1 = typeof direction
+ * type a2 = keyof typeof direction
+ *
+ * type Direction2 = a1[a2]
+ * type Direction = (typeof direction)[keyof typeof direction]
+ *
+ * function foo(a: Direction) {
+ *   // code
+ * }
+ *
+ * foo(direction.Up) // ✅ Так все хорошо отработает
+ * foo("UP") // ✅ И так все хорошо отработает 👍
+ *
+ */
+
+/**
  * readonly свва в объекте ResultCode2
  */
 const ResultCodeAsObject = {
