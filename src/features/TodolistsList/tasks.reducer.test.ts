@@ -85,13 +85,41 @@ beforeEach(() => {
   }
 })
 
-type AddTaskType = Omit<ReturnType<typeof tasksThunks.addTask.fulfilled>, "meta">
-type ActionForTest<T extends (...args: any) => any> = Omit<ReturnType<T>, "meta">
+/**
+ * type AddTaskType = Omit<ReturnType<typeof tasksThunks.addTask.fulfilled>, "meta">
+ *
+ * type testData<G extends { a: number; b: number }> = {
+ *   date: string
+ *   myObject: G
+ * }
+ *
+ * const a: testData<{ a: number; b: number; c: number }> = {
+ *   date: "2020-01-01",
+ *   myObject: {
+ *     a: 123,
+ *     b: 134,
+ *     c: 1234,
+ *   },
+ * }
+ *
+ * (...args: any) => any
+ *
+ *
+ * type MyFunction<T extends {}, K extends keyof T> = (a: T, b: K) => T[K]
+ *
+ * const obj: { a: number; b: string } = {
+ *   a: 123,
+ *   b: "14rqwfr",
+ * }
+ * const test: MyFunction<typeof obj, "b"> = (obj, key) => {
+ *   return obj[key]
+ * }
+ */
 
-// (...args: any) => any
+export type ActionForTest<T extends (...args: any) => any> = Omit<ReturnType<T>, "meta">
 
 test("correct task should be deleted from correct array", () => {
-  type RemoveTaskType = Omit<ReturnType<typeof tasksThunks.removeTask.fulfilled>, "meta">
+  type RemoveTaskType = ActionForTest<typeof tasksThunks.removeTask.fulfilled>
 
   const action: RemoveTaskType = {
     type: tasksThunks.removeTask.fulfilled.type,
