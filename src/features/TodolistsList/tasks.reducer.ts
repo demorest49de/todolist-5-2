@@ -16,6 +16,35 @@ import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk"
 
 const initialState: TasksStateType = {}
 
+enum ResultCodeAsEnum {
+  success = 0,
+  error = 1,
+  captcha = 10,
+}
+
+/**
+ * const directions = ["up", "down", "left", "right"] as const;
+ *
+ * // Тип directions теперь равен readonly ["up", "down", "left", "right"]
+ * type Direction = (typeof directions)[number];
+ *
+ * // Тип Direction равен "up" | "down" | "left" | "right"
+ * let move: Direction;
+ * move = "up"; // Правильно
+ * move = "down"; // Правильно
+ * move = "forward"; // Ошибка: Тип '"forward"' не может быть присвоен типу 'Direction'.
+ *
+ */
+
+/**
+ * readonly свва в объекте ResultCode2
+ */
+const ResultCodeAsObject = {
+  success: 0,
+  error: 1,
+  captcha: 10,
+} as const
+
 const slice = createSlice({
   name: "tasks",
   initialState,
@@ -116,7 +145,7 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string; ti
     try {
       const res = await todolistsAPI.createTask(args)
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCodeAsEnum.success) {
         const task = res.data.data.item
         dispatch(appActions.setAppStatus({ status: "succeeded" }))
         return { task }
