@@ -126,3 +126,8 @@ export type ArgsUpdateTask = {
   domainModel: UpdateDomainTaskModelType,
   todolistId: string
 }
+
+export type ArgsDeleteTask = {
+  taskId: string,
+  todolistId: string
+}

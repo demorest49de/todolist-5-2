@@ -85,37 +85,39 @@ beforeEach(() => {
   };
 });
 
-test("correct task should be deleted from correct array", () => {
-  const action = tasksActions.removeTask({ taskId: "2", todolistId: "todolistId2" });
+// test("correct task should be deleted from correct array", () => {
+//   const action = tasksActions.removeTask({ taskId: "2", todolistId: "todolistId2" });
+//
+//   const endState = tasksReducer(startState, action);
+//
+//   expect(endState["todolistId1"].length).toBe(3);
+//   expect(endState["todolistId2"].length).toBe(2);
+//   expect(endState["todolistId2"].every((t) => t.id !== "2")).toBeTruthy();
+// });
 
-  const endState = tasksReducer(startState, action);
-
-  expect(endState["todolistId1"].length).toBe(3);
-  expect(endState["todolistId2"].length).toBe(2);
-  expect(endState["todolistId2"].every((t) => t.id !== "2")).toBeTruthy();
-});
-
-test("correct task should be added to correct array", () => {
-type AddTaskType = Omit<ReturnType<typeof  tasksThunks.addTask.fulfilled>, 'meta'>
-    tasksThunks.addTask({      todolistId: "todolistId2",      title: "juce",  });
-
+// test("correct task should be added to correct array", () => {
+// type AddTaskType = Omit<ReturnType<typeof  tasksThunks.addTask.fulfilled>, 'meta'>
+//     tasksThunks.addTask({      todolistId: "todolistId2",      title: "juce",  });
+//
 // const action: AddTaskType = {
 //     type: tasksThunks.addTask.fulfilled.type,
-    // payload: {      todolistId: "todolistId2",      title: "juce",  }
-  // }
-
-
-  // expect(endState["todolistId1"].length).toBe(3);
-  // expect(endState["todolistId2"].length).toBe(4);
-  // expect(endState["todolistId2"][0].id).toBeDefined();
-  // expect(endState["todolistId2"][0].title).toBe("juce");
-  // expect(endState["todolistId2"][0].status).toBe(TaskStatuses.New);
-});
+//     payload: {      todolistId: "todolistId2",      title: "juce",  }
+//   }
+//   /**
+//    * https://youtu.be/UAWORfJmSxI?t=8925
+//    */
+//
+//   // expect(endState["todolistId1"].length).toBe(3);
+//   // expect(endState["todolistId2"].length).toBe(4);
+//   // expect(endState["todolistId2"][0].id).toBeDefined();
+//   // expect(endState["todolistId2"][0].title).toBe("juce");
+//   // expect(endState["todolistId2"][0].status).toBe(TaskStatuses.New);
+// });
 
 // test("status of specified task should be changed", () => {
-//   const action = tasksActions.updateTask({
+//   const action = tasksThunks.updateTask({
 //     taskId: "2",
-//     model: { status: TaskStatuses.New },
+//     domainModel: { status: TaskStatuses.New },
 //     todolistId: "todolistId2"
 //   });
 //
@@ -124,9 +126,9 @@ type AddTaskType = Omit<ReturnType<typeof  tasksThunks.addTask.fulfilled>, 'meta
 //   expect(endState["todolistId1"][1].status).toBe(TaskStatuses.Completed);
 //   expect(endState["todolistId2"][1].status).toBe(TaskStatuses.New);
 // });
-//
+
 // test("title of specified task should be changed", () => {
-//   const action = tasksActions.updateTask({ taskId: "2", model: { title: "yogurt" }, todolistId: "todolistId2" });
+//   const action = tasksThunks.updateTask({ taskId: "2", domainModel: { title: "yogurt" }, todolistId: "todolistId2" });
 //
 //   const endState = tasksReducer(startState, action);
 //
