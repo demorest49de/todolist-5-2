@@ -1,5 +1,5 @@
 import axios from "axios"
-import { UpdateDomainTaskModelType } from "../features/TodolistsList/tasks.reducer"
+import { UpdateDomainTaskModelType } from "features/TodolistsList/tasks.reducer"
 
 const settings = {
   withCredentials: true,

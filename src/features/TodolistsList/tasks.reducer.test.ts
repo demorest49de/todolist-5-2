@@ -2,7 +2,7 @@ import { tasksReducer, TasksStateType, tasksThunks } from "features/TodolistsLis
 import { TaskPriorities, TaskStatuses } from "api/todolists-api"
 import { todolistsActions } from "features/TodolistsList/todolists.reducer"
 import { nanoid } from "@reduxjs/toolkit"
-import { ActionForTest } from "../../common/type/ActionForTest"
+import { ActionForTest } from "common/type/ActionForTest"
 
 let startState: TasksStateType = {}
 beforeEach(() => {

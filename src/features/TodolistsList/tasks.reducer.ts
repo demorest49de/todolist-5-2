@@ -12,7 +12,7 @@ import { appActions } from "app/app.reducer"
 import { todolistsActions } from "features/TodolistsList/todolists.reducer"
 import { createSlice } from "@reduxjs/toolkit"
 import { clearTasksAndTodolists } from "common/actions/common.actions"
-import { createAppAsyncThunk } from "../../utils/createAppAsyncThunk"
+import { createAppAsyncThunk } from "utils/createAppAsyncThunk"
 
 const initialState: TasksStateType = {}
 
@@ -22,6 +22,7 @@ enum ResultCodeAsEnum {
   captcha = 10,
 }
 
+//region examples
 /**
  * const directions = ["up", "down", "left", "right"] as const;
  *
@@ -60,6 +61,7 @@ enum ResultCodeAsEnum {
  * foo("UP") // ✅ И так все хорошо отработает 👍
  *
  */
+//endregion examples
 
 /**
  * readonly свва в объекте ResultCode2
@@ -83,7 +85,7 @@ const slice = createSlice({
 
   //region extrareducers
   /**
-   * todo extra reducer нужен: 1) с санками работает только экстраредюсер; 2) вызвать вызвать редюсер из другого слайса
+   * extra reducer нужен: 1) с санками работает только экстраредюсер; 2) вызвать вызвать редюсер из другого слайса
    */
   extraReducers: (builder) => {
     builder
